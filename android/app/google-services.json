@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "717421670072",
+    "firebase_url": "https://trainapp-90068-default-rtdb.firebaseio.com",
+    "project_id": "trainapp-90068",
+    "storage_bucket": "trainapp-90068.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717421670072:android:af8ebb058aabfc72e98e4d",
+        "android_client_info": {
+          "package_name": "com.example.train_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQGzt2OWBYMImPthczk2X-5wHgFL1tXWY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
