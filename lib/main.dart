@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:train_app/firebase_options.dart';
 import 'package:train_app/pages/AuthController.dart';
 import 'package:train_app/pages/map_page.dart';
+import 'package:train_app/pages/signup_page.dart';
 // import 'package:train_app/pages/login_page.dart';
 // import 'package:train_app/pages/map_page.dart';
 // import 'package:train_app/pages/signup_page.dart';
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
      debugShowCheckedModeBanner: false,
-      home:AuthPage(),
+      home:MapPage(),
     );
   }
 }

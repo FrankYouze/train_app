@@ -1,14 +1,16 @@
 import 'dart:convert';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:train_app/components/sideMenu.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MapPage extends StatefulWidget {
   MapPage({super.key});
- 
-    static const CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(-6.1811,35.7469),
+
+  static const CameraPosition _kGooglePlex = CameraPosition(
+    target: LatLng(-6.1811, 35.7469),
     zoom: 8,
   );
 
@@ -17,17 +19,49 @@ class MapPage extends StatefulWidget {
 }
 
 class _gMapPageState extends State<MapPage> {
-   int _selectedIndex = 0;
- List<LatLng> _roadCoordinates = []; // List to hold road coordinates
+  int _selectedIndex = 0;
+  List<LatLng> _roadCoordinates = []; // List to hold road coordinates
+  late double lati = 0;
+  late double long = 0;
 
   @override
   void initState() {
     super.initState();
-    _fetchRoadCoordinates();
+
+    setState(() {
+      _fetchRoadCoordinates();
+     
+      _getLocation().then((value) {
+        lati = double.parse('${value.latitude}');
+        long = double.parse('${value.longitude}');
+
+        print("lati" + '$lati');
+         print("long" + "$long");
+      });
+
+       _createMarkers();
+    });
+  }
+  
+
+  Future<Position> _getLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+    if (!serviceEnabled) {
+      return Future.error('enable location');
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      return Future.error("permision denied");
+    }
+
+    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   }
 
-
-   Future<void> _fetchRoadCoordinates() async {
+  Future<void> _fetchRoadCoordinates() async {
     final response = await http.get(Uri.parse(
       'https://maps.googleapis.com/maps/api/directions/json?origin=-6.7924,39.2083&destination=-6.8224,37.6616&key=AIzaSyCi8N145aXDsY2znrwK6RxG9p1X8sKa-cU',
     ));
@@ -36,14 +70,15 @@ class _gMapPageState extends State<MapPage> {
       final decodedResponse = json.decode(response.body);
       // Extract coordinates from the response and add them to _roadCoordinates list
       setState(() {
-        _roadCoordinates = _decodePolyline(decodedResponse['routes'][0]['overview_polyline']['points']);
+        _roadCoordinates = _decodePolyline(
+            decodedResponse['routes'][0]['overview_polyline']['points']);
       });
     } else {
       throw Exception('Failed to load road coordinates');
     }
   }
 
-    List<LatLng> _decodePolyline(String encoded) {
+  List<LatLng> _decodePolyline(String encoded) {
     List<LatLng> points = [];
     int index = 0, len = encoded.length;
     int lat = 0, lng = 0;
@@ -73,22 +108,27 @@ class _gMapPageState extends State<MapPage> {
     }
     return points;
   }
-  
-
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        
-        title: Text('Maps',style: TextStyle(color: Colors.white),),
+        title: Text(
+          'Maps',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.black,
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       drawer: SideMenu(),
-      body: GoogleMap(initialCameraPosition:MapPage._kGooglePlex ,
-      markers: _createMarkers(),
-      polylines: {
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.black,
+        onPressed: (){},child:Icon(Icons.help,color: Colors.white,)),
+      body: GoogleMap(
+        initialCameraPosition: MapPage._kGooglePlex,
+        mapType: MapType.satellite,
+        markers: _createMarkers(),
+        polylines: {
           Polyline(
             polylineId: PolylineId('sgr_route'),
             points: _roadCoordinates,
@@ -97,31 +137,26 @@ class _gMapPageState extends State<MapPage> {
           ),
         },
       ),
-      
-      
-    // bottomNavigationBar: Container(
-          
-    //     height: 70,
-    
-    //       child: BottomNavigationBar(
-    //         //onTap: _bottonNavigation,
-    //        backgroundColor: Colors.blue[200],
-    //          currentIndex: _selectedIndex,
-    //          selectedItemColor: Colors.blue[800],
-    //          type: BottomNavigationBarType.fixed,
-    //           items: const [
-    //             BottomNavigationBarItem(icon: Icon(Icons.map), label:"Explore"),
-    //             BottomNavigationBarItem(icon: Icon(Icons.train), label: "Trains"),
-    //             BottomNavigationBarItem(icon: Icon(Icons.add_a_photo_rounded), label: "contribute"),
-    //             BottomNavigationBarItem(icon: Icon(Icons.notifications), label: "Updates"),
-
-    //           ],),
-       
-    //   ),
-
+      bottomNavigationBar: Container(
+        height: 70,
+        child: BottomNavigationBar(
+          //onTap: _bottonNavigation,
+          backgroundColor: Colors.black,
+          currentIndex: _selectedIndex,
+          selectedItemColor: Colors.blue[100],
+          type: BottomNavigationBarType.fixed,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.map,color: Colors.white,), label: "Explore"),
+            BottomNavigationBarItem(icon: Icon(Icons.train,color: Colors.white,), label: "Trains"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.add_a_photo_rounded,color: Colors.white,), label: "contribute"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.notifications,color: Colors.white,), label: "Updates"),
+          ],
+        ),
+      ),
     );
   }
-}
 
   Set<Polyline> _createPolylines() {
     return {
@@ -139,7 +174,7 @@ class _gMapPageState extends State<MapPage> {
     };
   }
 
-     Set<Marker> _createMarkers() {
+  Set<Marker> _createMarkers() {
     return {
       Marker(
         markerId: MarkerId('dar_es_salaam'),
@@ -151,6 +186,19 @@ class _gMapPageState extends State<MapPage> {
         position: LatLng(-6.8224, 37.6616), // Morogoro terminal
         infoWindow: InfoWindow(title: 'Morogoro Terminal'),
       ),
+      Marker(
+          markerId: MarkerId("USER"),
+          position: LatLng(lati, long))
       // Add more markers for other terminals if needed
     };
   }
+
+  void _launchTelegram() async {
+  Uri url = Uri.parse('tg://resolve?domain=example_user'); // Replace with your Telegram link or username
+  if (await canLaunchUrl(url)) {
+    await launchUrl(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
+}

@@ -75,7 +75,7 @@ class SignUpPage extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                    Icons.person,
+                  Icons.woman,
                     color: Colors.white70,
                     size: 140,
                   ),
