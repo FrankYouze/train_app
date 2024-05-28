@@ -10,40 +10,34 @@ import 'package:train_app/pages/login_page.dart';
 class SignUpPage extends StatelessWidget {
   SignUpPage({super.key});
   final FirebaseAuth _auth = FirebaseAuth.instance;
-   final DatabaseReference _databaseRef =
+  final DatabaseReference _databaseRef =
       FirebaseDatabase.instance.ref().child('RegisteredUser2');
   final userEmailcon = TextEditingController();
   final passcon = TextEditingController();
- final userNamecon = TextEditingController();
+  final userNamecon = TextEditingController();
   final phoneCon = TextEditingController();
-
-
-// void signInUser()async{
   
-
-//  await FirebaseAuth.instance.signInWithEmailAndPassword(
-//    email: userEmailcon.text,
-//     password: passcon.text);
-  
-//  }
 
 
   Future<void> signUpWithEmailPassword(String email, String password) async {
-  try {
-    UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    // User signed up successfully
-    User? user = userCredential.user;
-  } catch (e) {
-    print('Failed to sign up with email and password: $e');
+    try {
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      // User signed up successfully
+      User? user = userCredential.user;
+      User? user1 = _auth.currentUser;
+   await  _databaseRef.child(user1!.uid).set({
+        "phoneNumber": phoneCon.text,
+        "fullName":userNamecon.text,
+      });
+   
+    } catch (e) {
+      print('Failed to sign up with email and password: $e');
+    }
   }
-}
-  
-
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +69,7 @@ class SignUpPage extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                  Icons.woman,
+                    Icons.person,
                     color: Colors.white70,
                     size: 140,
                   ),
@@ -131,19 +125,26 @@ class SignUpPage extends StatelessWidget {
                 //   height: 20,
                 // ),
                 MyButton(
-                  onTap: () {
-                     Navigator.push(
-                      context,
-                       MaterialPageRoute(
-                         builder: (context) => LoginPage(),
-                       ),
-                     );
+                  onTap: () async {
+                    //  Navigator.push(
+                    //   context,
+                    //    MaterialPageRoute(
+                    //      builder: (context) => LoginPage(),
+                    //    ),
+                    //  );
 
-                    signUpWithEmailPassword(userEmailcon.text, passcon.text);
-                       _databaseRef.child(userNamecon.text)
-                       .set({
-                          "PhoneNumber": phoneCon.text
-                        });
+                    await signUpWithEmailPassword(
+                        userEmailcon.text, passcon.text);
+                     
+                   
+                  await  Navigator.push(
+                      context,
+                        MaterialPageRoute(
+                          builder: (context) => LoginPage(),
+                      ),
+                    );
+
+
                   },
                 ),
                 const SizedBox(

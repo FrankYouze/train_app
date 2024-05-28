@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:train_app/pages/booking_page.dart';
+import 'package:train_app/pages/ticket_pages.dart';
 import 'package:train_app/pages/trains_page.dart';
 
 
@@ -25,7 +26,7 @@ class SideMenu extends StatelessWidget {
         //Navigator.pop(context);
       },
       ),
-      ListTile(title: Text("Contact"),),
+      ListTile(title: Text("My Tickets"),onTap: (){ Navigator.push(context,MaterialPageRoute(builder: (context)=> TicketPage() ));}),
       ListTile(title: Text("Settings"),),
       ListTile(title: Text("Log Out"),onTap: (){
                         FirebaseAuth.instance.signOut();

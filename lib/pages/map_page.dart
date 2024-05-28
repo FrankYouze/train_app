@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -119,14 +120,17 @@ class _gMapPageState extends State<MapPage> {
         ),
         backgroundColor: Colors.black,
         iconTheme: IconThemeData(color: Colors.white),
+        actions: [IconButton(icon: Icon( Icons.logout),onPressed: () {
+            FirebaseAuth.instance.signOut();
+        },)],
       ),
       drawer: SideMenu(),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.black,
-        onPressed: (){},child:Icon(Icons.help,color: Colors.white,)),
+        onPressed: _launchTelegram,child:Icon(Icons.help,color: Colors.white,)),
       body: GoogleMap(
         initialCameraPosition: MapPage._kGooglePlex,
-        mapType: MapType.satellite,
+        mapType: MapType.normal,
         markers: _createMarkers(),
         polylines: {
           Polyline(
@@ -194,9 +198,9 @@ class _gMapPageState extends State<MapPage> {
   }
 
   void _launchTelegram() async {
-  Uri url = Uri.parse('tg://resolve?domain=example_user'); // Replace with your Telegram link or username
+  Uri url = Uri.parse('https://t.me/nittreni_bot'); 
   if (await canLaunchUrl(url)) {
-    await launchUrl(url);
+    await launchUrl(url,mode: LaunchMode.externalApplication);
   } else {
     throw 'Could not launch $url';
   }
