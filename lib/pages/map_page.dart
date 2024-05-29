@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:train_app/components/sideMenu.dart';
+import 'package:train_app/pages/trains_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MapPage extends StatefulWidget {
@@ -148,14 +149,17 @@ class _gMapPageState extends State<MapPage> {
           backgroundColor: Colors.black,
           currentIndex: _selectedIndex,
           selectedItemColor: Colors.blue[100],
+          unselectedItemColor: Colors.blue,
           type: BottomNavigationBarType.fixed,
           items:  [
             BottomNavigationBarItem(icon: Icon(Icons.map,color: Colors.white,), label: "Explore"),
-            BottomNavigationBarItem(icon: Icon(Icons.train,color: Colors.white,), label: "Trains"),
+            BottomNavigationBarItem(icon: IconButton(icon:Icon(Icons.train,color: Colors.white),onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => TrainRoutePage()));
+            }), label: "Trains"),
             BottomNavigationBarItem(
                 icon: Icon(Icons.add_a_photo_rounded,color: Colors.white,), label: "contribute"),
             BottomNavigationBarItem(
-                icon: IconButton(icon:Icon(Icons.help_center,color: Colors.white),onPressed: _launchTelegram,), label: "Updates" ),
+                icon: IconButton(icon:Icon(Icons.help_center,color: Colors.white),onPressed: _launchTelegram,), label: "Help" ),
           ],
         ),
       ),
