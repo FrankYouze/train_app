@@ -125,9 +125,9 @@ class _gMapPageState extends State<MapPage> {
         },)],
       ),
       drawer: SideMenu(),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.black,
-        onPressed: _launchTelegram,child:Icon(Icons.help,color: Colors.white,)),
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: Colors.black,
+      //   onPressed: _launchTelegram,child:Icon(Icons.help,color: Colors.white,)),
       body: GoogleMap(
         initialCameraPosition: MapPage._kGooglePlex,
         mapType: MapType.normal,
@@ -149,13 +149,13 @@ class _gMapPageState extends State<MapPage> {
           currentIndex: _selectedIndex,
           selectedItemColor: Colors.blue[100],
           type: BottomNavigationBarType.fixed,
-          items: const [
+          items:  [
             BottomNavigationBarItem(icon: Icon(Icons.map,color: Colors.white,), label: "Explore"),
             BottomNavigationBarItem(icon: Icon(Icons.train,color: Colors.white,), label: "Trains"),
             BottomNavigationBarItem(
                 icon: Icon(Icons.add_a_photo_rounded,color: Colors.white,), label: "contribute"),
             BottomNavigationBarItem(
-                icon: Icon(Icons.notifications,color: Colors.white,), label: "Updates"),
+                icon: IconButton(icon:Icon(Icons.notifications,color: Colors.white),onPressed: _launchTelegram,), label: "Updates" ),
           ],
         ),
       ),
