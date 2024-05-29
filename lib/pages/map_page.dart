@@ -155,7 +155,7 @@ class _gMapPageState extends State<MapPage> {
             BottomNavigationBarItem(
                 icon: Icon(Icons.add_a_photo_rounded,color: Colors.white,), label: "contribute"),
             BottomNavigationBarItem(
-                icon: IconButton(icon:Icon(Icons.notifications,color: Colors.white),onPressed: _launchTelegram,), label: "Updates" ),
+                icon: IconButton(icon:Icon(Icons.help_center,color: Colors.white),onPressed: _launchTelegram,), label: "Updates" ),
           ],
         ),
       ),
